@@ -24,7 +24,7 @@ git clone https://github.com/your-org/chaostrace.git
 cd chaostrace
 
 # Create virtual environment
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 
 # Install with dev dependencies

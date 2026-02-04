@@ -1,14 +1,19 @@
 """
 Chaos Hooks
 
-Implementation of chaos actions that can be injected
-during SQL proxy operations.
+Implementation of chaos actions that execute REAL operations
+against the sandbox PostgreSQL database.
+
+This module is the core of chaos injection - it actually modifies
+the database state to test agent resilience.
 """
 
 import asyncio
+import os
 from datetime import datetime
 from typing import Any
 
+import asyncpg
 from structlog import get_logger
 
 from chaostrace.control_plane.models.chaos import ChaosAction, ChaosActionType
@@ -23,29 +28,72 @@ class ChaosHookError(Exception):
 
 class ChaosHooks:
     """
-    Implements chaos injection actions.
+    Implements REAL chaos injection actions against PostgreSQL.
     
     Each method corresponds to a chaos action type and
-    modifies the sandbox environment accordingly.
+    actually modifies the sandbox database.
     
     Usage:
-        hooks = ChaosHooks(postgres_connection)
+        hooks = ChaosHooks()
+        await hooks.connect("postgres", 5432, "sandbox", "sandbox_password", "sandbox")
         await hooks.execute(chaos_action)
+        await hooks.close()
     """
     
-    def __init__(self, db_connection: Any = None):
-        """
-        Initialize chaos hooks.
-        
-        Args:
-            db_connection: Connection to the sandbox PostgreSQL.
-        """
-        self.db_connection = db_connection
+    def __init__(self):
+        """Initialize chaos hooks (connection established separately)."""
+        self._pool: asyncpg.Pool | None = None
         self._active_locks: dict[str, asyncio.Task] = {}
         self._latency_ms: int = 0
         self._latency_end_time: datetime | None = None
+        self._lock_connections: dict[str, asyncpg.Connection] = {}
         
         logger.info("chaos_hooks_initialized")
+    
+    async def connect(
+        self,
+        host: str | None = None,
+        port: int | None = None,
+        user: str | None = None,
+        password: str | None = None,
+        database: str | None = None,
+    ) -> None:
+        """
+        Establish connection pool to PostgreSQL.
+        
+        Args:
+            host: PostgreSQL host (default from env: POSTGRES_HOST)
+            port: PostgreSQL port (default from env: POSTGRES_PORT)
+            user: Database user (default: sandbox)
+            password: Database password (default: sandbox_password)
+            database: Database name (default: sandbox)
+        """
+        host = host or os.getenv("POSTGRES_HOST", "localhost")
+        port = port or int(os.getenv("POSTGRES_PORT", "5432"))
+        user = user or os.getenv("POSTGRES_USER", "sandbox")
+        password = password or os.getenv("POSTGRES_PASSWORD", "sandbox_password")
+        database = database or os.getenv("POSTGRES_DB", "sandbox")
+        
+        try:
+            self._pool = await asyncpg.create_pool(
+                host=host,
+                port=port,
+                user=user,
+                password=password,
+                database=database,
+                min_size=2,
+                max_size=10,
+                command_timeout=60,
+            )
+            logger.info(
+                "chaos_hooks_connected",
+                host=host,
+                port=port,
+                database=database,
+            )
+        except Exception as e:
+            logger.error("chaos_hooks_connection_failed", error=str(e))
+            raise ChaosHookError(f"Failed to connect to PostgreSQL: {e}")
     
     async def execute(self, action: ChaosAction, context: dict = None) -> dict:
         """
@@ -145,7 +193,7 @@ class ChaosHooks:
         )
     
     # =========================================================================
-    # Database Chaos Handlers
+    # Database Chaos Handlers - REAL IMPLEMENTATIONS
     # =========================================================================
     
     async def _lock_table(
@@ -157,6 +205,7 @@ class ChaosHooks:
         Lock a table to simulate contention.
         
         Uses PostgreSQL's LOCK TABLE ... IN ACCESS EXCLUSIVE MODE
+        This ACTUALLY locks the table, blocking all other access.
         """
         table = action.table
         duration = action.duration_seconds or 30
@@ -164,23 +213,47 @@ class ChaosHooks:
         if not table:
             raise ChaosHookError("lock_table requires 'table' parameter")
         
-        # In a real implementation, this would execute:
-        # LOCK TABLE {table} IN ACCESS EXCLUSIVE MODE;
-        # And hold the lock for the specified duration
+        if not self._pool:
+            raise ChaosHookError("Not connected to database")
         
         logger.info(
-            "chaos_lock_table",
+            "chaos_lock_table_starting",
             table=table,
             duration_seconds=duration,
         )
         
-        # Simulate the lock (actual implementation would use pg connection)
         lock_key = f"lock_{table}"
         
+        # We need a dedicated connection that stays open during the lock
+        conn = await self._pool.acquire()
+        self._lock_connections[lock_key] = conn
+        
         async def hold_lock():
-            await asyncio.sleep(duration)
-            if lock_key in self._active_locks:
-                del self._active_locks[lock_key]
+            try:
+                # Start a transaction and lock the table
+                async with conn.transaction():
+                    await conn.execute(
+                        f"LOCK TABLE {table} IN ACCESS EXCLUSIVE MODE"
+                    )
+                    logger.info(
+                        "chaos_lock_acquired",
+                        table=table,
+                        duration_seconds=duration,
+                    )
+                    # Hold the lock for the specified duration
+                    await asyncio.sleep(duration)
+                    
+                logger.info("chaos_lock_released", table=table)
+            except asyncio.CancelledError:
+                logger.info("chaos_lock_cancelled", table=table)
+            except Exception as e:
+                logger.error("chaos_lock_error", table=table, error=str(e))
+            finally:
+                # Release the dedicated connection
+                if lock_key in self._lock_connections:
+                    await self._pool.release(self._lock_connections.pop(lock_key))
+                if lock_key in self._active_locks:
+                    del self._active_locks[lock_key]
         
         task = asyncio.create_task(hold_lock())
         self._active_locks[lock_key] = task
@@ -189,6 +262,7 @@ class ChaosHooks:
             "status": "locked",
             "table": table,
             "duration_seconds": duration,
+            "real_lock": True,
         }
     
     async def _add_latency(
@@ -204,7 +278,7 @@ class ChaosHooks:
         self._latency_end_time = datetime.utcnow().timestamp() + duration
         
         logger.info(
-            "chaos_add_latency",
+            "chaos_latency_applied",
             latency_ms=latency_ms,
             duration_seconds=duration,
         )
@@ -214,6 +288,7 @@ class ChaosHooks:
             await asyncio.sleep(duration)
             self._latency_ms = 0
             self._latency_end_time = None
+            logger.info("chaos_latency_removed")
         
         asyncio.create_task(remove_latency())
         
@@ -240,8 +315,12 @@ class ChaosHooks:
         action: ChaosAction,
         context: dict,
     ) -> dict:
-        """Simulate a connection timeout error."""
-        logger.info("chaos_simulate_timeout")
+        """
+        Simulate a connection timeout error.
+        
+        Sets a flag that the proxy will use to return timeout errors.
+        """
+        logger.info("chaos_timeout_simulated")
         
         return {
             "status": "timeout_simulated",
@@ -254,15 +333,29 @@ class ChaosHooks:
         action: ChaosAction,
         context: dict,
     ) -> dict:
-        """Invalidate current database credentials."""
-        logger.info("chaos_revoke_credentials")
+        """
+        Invalidate current database credentials.
         
-        # In reality, this would:
-        # ALTER USER agent PASSWORD 'new_random_password';
+        ACTUALLY changes the agent_user password, breaking existing connections.
+        """
+        if not self._pool:
+            raise ChaosHookError("Not connected to database")
+        
+        import secrets
+        new_password = secrets.token_urlsafe(16)
+        
+        async with self._pool.acquire() as conn:
+            await conn.execute(
+                f"ALTER USER agent_user WITH PASSWORD '{new_password}'"
+            )
+        
+        logger.info("chaos_credentials_revoked", user="agent_user")
         
         return {
             "status": "credentials_revoked",
             "should_invalidate_session": True,
+            "user": "agent_user",
+            "real_revocation": True,
         }
     
     async def _rename_column(
@@ -270,7 +363,11 @@ class ChaosHooks:
         action: ChaosAction,
         context: dict,
     ) -> dict:
-        """Rename a column (schema mutation)."""
+        """
+        Rename a column (schema mutation).
+        
+        ACTUALLY renames the column in the database.
+        """
         table = action.table
         column = action.column
         new_name = action.new_name
@@ -280,11 +377,16 @@ class ChaosHooks:
                 "rename_column requires 'table', 'column', and 'new_name'"
             )
         
-        # In reality:
-        # ALTER TABLE {table} RENAME COLUMN {column} TO {new_name};
+        if not self._pool:
+            raise ChaosHookError("Not connected to database")
+        
+        async with self._pool.acquire() as conn:
+            await conn.execute(
+                f"ALTER TABLE {table} RENAME COLUMN {column} TO {new_name}"
+            )
         
         logger.info(
-            "chaos_rename_column",
+            "chaos_column_renamed",
             table=table,
             old_name=column,
             new_name=new_name,
@@ -295,6 +397,7 @@ class ChaosHooks:
             "table": table,
             "old_name": column,
             "new_name": new_name,
+            "real_rename": True,
         }
     
     async def _change_column_type(
@@ -302,7 +405,11 @@ class ChaosHooks:
         action: ChaosAction,
         context: dict,
     ) -> dict:
-        """Change a column's data type."""
+        """
+        Change a column's data type.
+        
+        ACTUALLY changes the column type in the database.
+        """
         table = action.table
         column = action.column
         new_type = action.new_type
@@ -312,8 +419,16 @@ class ChaosHooks:
                 "change_column_type requires 'table', 'column', and 'new_type'"
             )
         
+        if not self._pool:
+            raise ChaosHookError("Not connected to database")
+        
+        async with self._pool.acquire() as conn:
+            await conn.execute(
+                f"ALTER TABLE {table} ALTER COLUMN {column} TYPE {new_type}"
+            )
+        
         logger.info(
-            "chaos_change_column_type",
+            "chaos_column_type_changed",
             table=table,
             column=column,
             new_type=new_type,
@@ -324,6 +439,7 @@ class ChaosHooks:
             "table": table,
             "column": column,
             "new_type": new_type,
+            "real_change": True,
         }
     
     async def _drop_index(
@@ -331,22 +447,35 @@ class ChaosHooks:
         action: ChaosAction,
         context: dict,
     ) -> dict:
-        """Drop an index on a table."""
-        # Index name would be in parameters
-        index_name = action.parameters.get("index_name", f"idx_{action.table}_id")
+        """
+        Drop an index on a table.
         
-        logger.info(
-            "chaos_drop_index",
-            index_name=index_name,
-        )
+        ACTUALLY drops the index, potentially causing slow queries.
+        """
+        index_name = action.parameters.get("index_name")
+        if not index_name and action.table:
+            index_name = f"idx_{action.table}_id"
+        
+        if not index_name:
+            raise ChaosHookError("drop_index requires 'index_name' parameter")
+        
+        if not self._pool:
+            raise ChaosHookError("Not connected to database")
+        
+        async with self._pool.acquire() as conn:
+            await conn.execute(f"DROP INDEX IF EXISTS {index_name}")
+        
+        logger.info("chaos_index_dropped", index_name=index_name)
         
         return {
             "status": "index_dropped",
             "index_name": index_name,
+            "real_drop": True,
         }
     
     # =========================================================================
     # Resource Chaos Handlers
+    # These set flags that affect proxy behavior rather than DB directly
     # =========================================================================
     
     async def _simulate_disk_full(
@@ -354,11 +483,11 @@ class ChaosHooks:
         action: ChaosAction,
         context: dict,
     ) -> dict:
-        """Simulate disk full condition."""
+        """Simulate disk full condition by rejecting writes."""
         duration = action.duration_seconds or 60
         
         logger.info(
-            "chaos_disk_full",
+            "chaos_disk_full_simulated",
             duration_seconds=duration,
         )
         
@@ -374,11 +503,11 @@ class ChaosHooks:
         context: dict,
     ) -> dict:
         """Simulate memory pressure."""
-        percentage = action.percentage or 80  # 80% memory usage
+        percentage = action.percentage or 80
         duration = action.duration_seconds or 60
         
         logger.info(
-            "chaos_memory_pressure",
+            "chaos_memory_pressure_simulated",
             percentage=percentage,
             duration_seconds=duration,
         )
@@ -395,11 +524,11 @@ class ChaosHooks:
         context: dict,
     ) -> dict:
         """Throttle CPU for the container."""
-        percentage = action.percentage or 50  # 50% throttle
+        percentage = action.percentage or 50
         duration = action.duration_seconds or 60
         
         logger.info(
-            "chaos_cpu_throttle",
+            "chaos_cpu_throttle_simulated",
             percentage=percentage,
             duration_seconds=duration,
         )
@@ -423,7 +552,7 @@ class ChaosHooks:
         duration = action.duration_seconds or 30
         
         logger.info(
-            "chaos_network_partition",
+            "chaos_network_partition_simulated",
             duration_seconds=duration,
         )
         
@@ -438,11 +567,11 @@ class ChaosHooks:
         context: dict,
     ) -> dict:
         """Introduce packet loss."""
-        percentage = action.percentage or 10  # 10% packet loss
+        percentage = action.percentage or 10
         duration = action.duration_seconds or 60
         
         logger.info(
-            "chaos_packet_loss",
+            "chaos_packet_loss_simulated",
             percentage=percentage,
             duration_seconds=duration,
         )
@@ -462,10 +591,32 @@ class ChaosHooks:
         # Cancel all active locks
         for lock_key, task in list(self._active_locks.items()):
             task.cancel()
-            del self._active_locks[lock_key]
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+        self._active_locks.clear()
+        
+        # Release any held lock connections
+        if self._pool:
+            for lock_key, conn in list(self._lock_connections.items()):
+                try:
+                    await self._pool.release(conn)
+                except Exception:
+                    pass
+        self._lock_connections.clear()
         
         # Reset latency
         self._latency_ms = 0
         self._latency_end_time = None
         
         logger.info("chaos_hooks_cleaned_up")
+    
+    async def close(self) -> None:
+        """Close database connections."""
+        await self.cleanup()
+        
+        if self._pool:
+            await self._pool.close()
+            self._pool = None
+            logger.info("chaos_hooks_connection_closed")

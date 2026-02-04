@@ -4,7 +4,7 @@ File System Operation Models
 Pydantic models for file system events, policies, and analysis.
 """
 
-from datetime import datetime
+from datetime import datetime, UTC
 from enum import Enum
 from pathlib import Path
 from typing import Any
@@ -93,7 +93,7 @@ class FSEvent(BaseModel):
     )
     
     timestamp: datetime = Field(
-        default_factory=datetime.utcnow,
+        default_factory=lambda: datetime.now(UTC),
         description="When the operation occurred"
     )
     

@@ -86,3 +86,4 @@ Thumbs.db
 runs/
 *.jsonl
 sandbox/data/
+data/

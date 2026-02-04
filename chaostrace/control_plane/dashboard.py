@@ -616,23 +616,23 @@ ENHANCED_DASHBOARD_HTML = '''
             
             <nav class="nav-section">
                 <div class="nav-label">Main</div>
-                <a class="nav-item active" onclick="showView('dashboard')">
+                <a class="nav-item active" onclick="showView('dashboard', this)">
                     <span class="nav-icon">📊</span> Dashboard
                 </a>
-                <a class="nav-item" onclick="showView('runs')">
+                <a class="nav-item" onclick="showView('runs', this)">
                     <span class="nav-icon">🧪</span> Test Runs
                 </a>
-                <a class="nav-item" onclick="showView('scenarios')">
+                <a class="nav-item" onclick="showView('scenarios', this)">
                     <span class="nav-icon">📋</span> Scenarios
                 </a>
             </nav>
             
             <nav class="nav-section">
                 <div class="nav-label">Configuration</div>
-                <a class="nav-item" onclick="showView('policies')">
+                <a class="nav-item" onclick="showView('policies', this)">
                     <span class="nav-icon">🛡️</span> Policies
                 </a>
-                <a class="nav-item" onclick="showView('chaos')">
+                <a class="nav-item" onclick="showView('chaos', this)">
                     <span class="nav-icon">💥</span> Chaos Scripts
                 </a>
             </nav>
@@ -853,12 +853,21 @@ ENHANCED_DASHBOARD_HTML = '''
     <script>
         const API_BASE = '/api';
         
+        // Helper function to parse UTC timestamps and display in local timezone
+        function formatTimestamp(isoString) {
+            if (!isoString) return '-';
+            // Ensure the timestamp is treated as UTC by appending 'Z' if not present
+            const date = new Date(isoString.endsWith('Z') ? isoString : isoString + 'Z');
+            return date.toLocaleString();
+        }
+        
         // Navigation Logic
-        function showView(viewId) {
+        function showView(viewId, element) {
             // Update Menu
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            // Find the nav item that called this (hacky but works for inline onclick)
-            event.target.closest('.nav-item').classList.add('active');
+            if (element) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+            }
 
             // Switch View
             document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
@@ -874,7 +883,7 @@ ENHANCED_DASHBOARD_HTML = '''
         // Data Fetching
         async function fetchRuns() {
             try {
-                const res = await fetch(`${API_BASE}/runs`);
+                const res = await fetch(`${API_BASE}/runs`, { cache: "no-store" });
                 const data = await res.json();
                 return data.runs || [];
             } catch (e) {
@@ -884,9 +893,9 @@ ENHANCED_DASHBOARD_HTML = '''
         }
         
         function updateStats(runs) {
-            const passed = runs.filter(r => r.verdict === 'pass').length;
-            const failed = runs.filter(r => r.verdict === 'fail').length;
+            const failed = runs.filter(r => r.status === 'failed' || r.verdict === 'fail').length;
             const active = runs.filter(r => ['running', 'pending', 'initializing'].includes(r.status)).length;
+            const passed = runs.filter(r => r.verdict === 'pass' && r.status !== 'failed').length;
             
             document.getElementById('totalRuns').textContent = runs.length;
             document.getElementById('passedRuns').textContent = passed;
@@ -930,7 +939,7 @@ ENHANCED_DASHBOARD_HTML = '''
                     <td>${getVerdictBadge(run.verdict, run.status)}</td>
                     <td>${run.score || '-'}</td>
                     ${!full ? `<td>${run.total_sql_events || 0}</td><td>${run.blocked_events || 0}</td>` : `<td>${run.duration_seconds || '-'}s</td>`}
-                    <td>${new Date(run.created_at).toLocaleString()}</td>
+                    <td>${formatTimestamp(run.created_at)}</td>
                 </tr>
             `).join('');
         }
@@ -977,16 +986,22 @@ ENHANCED_DASHBOARD_HTML = '''
         }
 
         async function createRun(btnElement) {
+            console.log('createRun triggered');
             const form = document.getElementById('createRunForm');
+            if (!form) { console.error('Form not found'); return; }
+            
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
-            data.timeout_seconds = parseInt(data.timeout_seconds) || 300; // Default if parsing fails
+            data.timeout_seconds = parseInt(data.timeout_seconds) || 300; 
             
-            // Add submit button loading state
-            const btn = btnElement || document.querySelector('.btn-primary'); // Fallback
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span>⏳</span> Starting...';
-            btn.disabled = true;
+            console.log('Submitting run request:', data);
+            
+            const btn = btnElement || document.querySelector('.btn-primary'); 
+            const originalText = btn ? btn.innerHTML : 'Start Run';
+            if (btn) {
+                btn.innerHTML = '<span>⏳</span> Starting...';
+                btn.disabled = true;
+            }
             
             try {
                 const res = await fetch(`${API_BASE}/runs`, {
@@ -995,37 +1010,37 @@ ENHANCED_DASHBOARD_HTML = '''
                     body: JSON.stringify(data),
                 });
                 
+                console.log('Response status:', res.status);
                 const responseData = await res.json();
+                console.log('Response data:', responseData);
                 
                 if (res.ok) {
-                    console.log('Run created:', responseData);
                     form.reset();
-                    showView('dashboard'); // Return to dashboard
+                    showView('dashboard', null); 
                     setTimeout(() => renderRuns(false), 500);
                 } else {
-                    console.error('Create run failed:', responseData);
-                    // Absolute fallback to ensure we see SOMETHING
                     let msg = "Unknown Error";
-                    try {
-                        if (Array.isArray(responseData)) {
-                            // Pydantic validation error list
-                            msg = responseData.map(e => `${e.loc ? e.loc.join('.') : ''}: ${e.msg}`).join('\n');
-                        } else if (responseData && typeof responseData === 'object') {
-                           msg = responseData.detail || responseData.message || JSON.stringify(responseData);
+                    if (responseData && responseData.detail) {
+                        if (Array.isArray(responseData.detail)) {
+                            msg = responseData.detail.map(e => `${e.loc ? e.loc.join('.') : ''}: ${e.msg}`).join(' | ');
                         } else {
-                           msg = String(responseData);
+                            msg = responseData.detail;
                         }
-                    } catch (e) {
-                        msg = "Error parsing response: " + e.message;
+                    } else if (responseData && responseData.message) {
+                        msg = responseData.message;
+                    } else {
+                        msg = JSON.stringify(responseData);
                     }
                     alert('Error: ' + msg);
                 }
             } catch (e) {
-                console.error('Network error:', e);
+                console.error('Network error during createRun:', e);
                 alert('Network Error: ' + e.message);
             } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                if (btn) {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
             }
         }
         
@@ -1064,6 +1079,14 @@ ENHANCED_DASHBOARD_HTML = '''
                             <div><div class="form-label">Run ID</div><code>${run.run_id}</code></div>
                             <div><div class="form-label">Status</div>${run.status}</div>
                             <div><div class="form-label">Verdict</div>${getVerdictBadge(run.verdict, run.status)}</div>
+                        </div>
+                        <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                            <button class="btn btn-secondary" onclick="downloadReport('${run.run_id}', 'json')">
+                                📥 Download JSON
+                            </button>
+                            <button class="btn btn-secondary" onclick="downloadReport('${run.run_id}', 'markdown')">
+                                📥 Download Markdown
+                            </button>
                         </div>
                     </div>
                     
@@ -1104,12 +1127,32 @@ ENHANCED_DASHBOARD_HTML = '''
         function closeRunModal() { document.getElementById('runModal').classList.remove('active'); }
         function closeModal(e) { if(e.target.classList.contains('modal-overlay')) closeRunModal(); }
         function refreshRuns() { renderRuns(false); }
+        
+        async function downloadReport(runId, format) {
+            try {
+                const res = await fetch(`${API_BASE}/reports/${runId}?format=${format}`);
+                if (!res.ok) throw new Error('Failed to fetch report');
+                
+                const ext = format === 'json' ? 'json' : 'md';
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `chaostrace_report_${runId.slice(0, 8)}.${ext}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                alert('Failed to download: ' + e.message);
+            }
+        }
 
         // Initial Load
         document.addEventListener('DOMContentLoaded', () => {
             console.log('Dashboard initialized');
             try {
-                showView('dashboard'); // Force show dashboard
+                showView('dashboard', null); 
                 renderRuns(false);
                 // Auto-refresh every 3 seconds
                 setInterval(() => renderRuns(false), 3000);

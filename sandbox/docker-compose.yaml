@@ -27,7 +27,7 @@ services:
           memory: 512M
           cpus: '0.5'
 
-  # DB Proxy
+  # DB Proxy - intercepts SQL and sends events to control plane
   db-proxy:
     build:
       context: ../
@@ -37,7 +37,12 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       PROXY_LISTEN_PORT: 5433
-      CHAOSTRACE_RUN_ID: dev-run
+      # Control plane URL for sending events
+      CHAOSTRACE_CONTROL_PLANE_URL: http://api:8000
+      CHAOSTRACE_RUN_ID: ${CHAOSTRACE_RUN_ID:-dev-run}
+      PYTHONPATH: /app
+    volumes:
+      - ../:/app:ro
     ports:
       - "5433:5433"
     depends_on:
@@ -57,13 +62,20 @@ services:
       context: ../
       dockerfile: sandbox/Dockerfile.api
     container_name: chaostrace_api
+    command: uvicorn chaostrace.control_plane.main:app --host 0.0.0.0 --port 8000 --reload
     environment:
-      CHAOSTRACE_DOCKER_SOCKET: /var/run/docker.sock
-      CHAOSTRACE_DEBUG: "true"
+      - CHAOSTRACE_DOCKER_SOCKET=unix:///var/run/docker.sock
+      - CHAOSTRACE_DEBUG=true
+      # Use environment variable for host path (set in .env or shell)
+      - CHAOSTRACE_HOST_WORKSPACE_PATH=${CHAOSTRACE_HOST_PATH:-${PWD}}
+      - PYTHONPATH=/app
     ports:
       - "8000:8000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ../:/app:rw
+      # Persist event data
+      - ../data:/app/data
     depends_on:
       - postgres
       - db-proxy

@@ -1,0 +1,524 @@
+2026-02-04 09:41:46 [info     ] report_generator_initialized
+2026-02-04 09:41:46 [info     ] orchestrator_initialized       docker_socket=unix:///var/run/docker.sock
+2026-02-04 09:41:46 [info     ] chaostrace_starting            environment=development version=0.1.0
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:48688 - "GET /api/runs HTTP/1.1" 200 OK
+2026-02-04 09:42:40 [info     ] run_created                    agent_type=python policy=strict run_id=5ecd813e-50bf-48dc-818d-6fd8be32ddc2 scenario=data_cleanup
+INFO:     172.18.0.1:48688 - "POST /api/runs HTTP/1.1" 200 OK
+2026-02-04 09:42:40 [info     ] initializing_run               run_id=5ecd813e-50bf-48dc-818d-6fd8be32ddc2
+2026-02-04 09:42:40 [debug    ] network_created                network_id=fad39f34996ae9a8504f1cc5ec7d755dcd4dd9bf1305148ff73f1cc4a2995fcc network_name=chaostrace_run_5ecd813e50bf run_id=5ecd813e-50bf-48dc-818d-6fd8be32ddc2
+2026-02-04 09:42:40 [debug    ] postgres_started               container_id=c0f9760398d5cd07107de8db791e8a37f2b41df91c854c140d6eb5f08ce78b20 run_id=5ecd813e-50bf-48dc-818d-6fd8be32ddc2
+INFO:     172.18.0.1:53334 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53344 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53344 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53350 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53350 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:53352 - "GET /api/runs HTTP/1.1" 200 OK
+2026-02-04 09:43:12 [error    ] run_execution_failed           error='PostgreSQL did not become ready in time' run_id=5ecd813e-50bf-48dc-818d-6fd8be32ddc2
+[31m╭─[0m[31m────────────────────[0m[31m [0m[1;31mTraceback [0m[1;2;31m(most recent call last)[0m[31m [0m[31m─────────────────────[0m[31m─╮[0m
+[31m│[0m [2m/app/chaostrace/control_plane/services/[0m[1morchestrator.py[0m:162 in _execute_run   [31m│[0m
+[31m│[0m                                                                              [31m│[0m
+[31m│[0m   [2m159 [0m[2m│   │   [0m                                                               [31m│[0m
+[31m│[0m   [2m160 [0m[2m│   │   [0m[94mtry[0m:                                                           [31m│[0m
+[31m│[0m   [2m161 [0m[2m│   │   │   [0m[2m# Phase 1: Initialize containers[0m                           [31m│[0m
+[31m│[0m [31m❱ [0m162 [2m│   │   │   [0m[94mawait[0m [96mself[0m._initialize_run(run_id)                         [31m│[0m
+[31m│[0m   [2m163 [0m[2m│   │   │   [0m                                                           [31m│[0m
+[31m│[0m   [2m164 [0m[2m│   │   │   [0m[2m# Phase 2: Wait for agent completion[0m                       [31m│[0m
+[31m│[0m   [2m165 [0m[2m│   │   │   [0m[94mawait[0m [96mself[0m._monitor_run(run_id)                            [31m│[0m
+[31m│[0m                                                                              [31m│[0m
+[31m│[0m [34m╭─[0m[34m────────────────────────────────[0m[34m locals [0m[34m────────────────────────────────[0m[34m─╮[0m [31m│[0m
+[31m│[0m [34m│[0m      [3;33me[0m[31m =[0m [1;35mContainerStartError[0m[1m([0m[32m'PostgreSQL did not become ready in time'[0m[1m)[0m  [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m [3;33mrun_id[0m[31m =[0m [1;35mUUID[0m[1m([0m[32m'5ecd813e-50bf-48dc-818d-6fd8be32ddc2'[0m[1m)[0m                    [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m   [3;33mself[0m[31m =[0m [1m<[0m[1;95mchaostrace.control_plane.services.orchestrator.RunOrchestrator[0m [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [39mobject at [0m[1;36m0x79b691388950[0m[1m>[0m                                       [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m  [3;33mstate[0m[31m =[0m [1;35mRunState[0m[1m([0m                                                       [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mrun_id[0m=[1;35mUUID[0m[1m([0m[32m'5ecd813e-50bf-48dc-818d-6fd8be32ddc2'[0m[1m)[0m,        [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mrequest[0m=[1;35mRunRequest[0m[1m([0m                                         [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   │   [0m[33magent_type[0m=[1m<[0m[1;95mAgentType.PYTHON:[0m[39m [0m[32m'python'[0m[39m>,[0m                [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   │   [0m[33magent_entry[0m[39m=[0m[32m'examples/cleanup_agent.py'[0m[39m,[0m                [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   │   [0m[33mscenario[0m[39m=[0m[32m'data_cleanup'[0m[39m,[0m                                [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   │   [0m[33mpolicy_profile[0m[39m=[0m[32m'strict'[0m[39m,[0m                                [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   │   [0m[33mchaos_profile[0m[39m=[0m[32m''[0m[39m,[0m                                       [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   │   [0m[33mtimeout_seconds[0m[39m=[0m[1;36m300[0m[39m,[0m                                    [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   │   [0m[33menvironment[0m[39m=[0m[1;39m{[0m[1;39m}[0m[39m,[0m                                         [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   │   [0m[33mmetadata[0m[39m=[0m[1;39m{[0m[1;39m}[0m                                             [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[1;39m)[0m[39m,[0m                                                          [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mstatus[0m[39m=<RunStatus.INITIALIZING: [0m[32m'initializing'[0m[1m>[0m,            [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mverdict[0m=[3;35mNone[0m,                                               [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mcreated_at[0m=[1;35mdatetime[0m[1;35m.datetime[0m[1m([0m[1;36m2026[0m, [1;36m2[0m, [1;36m4[0m, [1;36m9[0m, [1;36m42[0m, [1;36m40[0m,         [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [1;36m350731[0m[1m)[0m,                                                        [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mstarted_at[0m=[3;35mNone[0m,                                            [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mended_at[0m=[3;35mNone[0m,                                              [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m                                                            [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [33mnetwork_id[0m=[32m'fad39f34996ae9a8504f1cc5ec7d755dcd4dd9bf1305148ff7…[0m [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m                                                            [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [33mpostgres_container_id[0m=[32m'c0f9760398d5cd07107de8db791e8a37f2b41df…[0m [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mproxy_container_id[0m=[3;35mNone[0m,                                    [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33magent_container_id[0m=[3;35mNone[0m,                                    [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mtotal_sql_events[0m=[1;36m0[0m,                                         [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mblocked_events[0m=[1;36m0[0m,                                           [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mchaos_events_triggered[0m=[1;36m0[0m,                                   [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33mviolations[0m=[1m[[0m[1m][0m,                                              [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [2;32m│   [0m[33merror_message[0m=[3;35mNone[0m                                          [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m          [1m)[0m                                                               [34m│[0m [31m│[0m
+[31m│[0m [34m╰──────────────────────────────────────────────────────────────────────────╯[0m [31m│[0m
+[31m│[0m                                                                              [31m│[0m
+[31m│[0m [2m/app/chaostrace/control_plane/services/[0m[1morchestrator.py[0m:202 in                [31m│[0m
+[31m│[0m _initialize_run                                                              [31m│[0m
+[31m│[0m                                                                              [31m│[0m
+[31m│[0m   [2m199 [0m[2m│   │   [0mstate.postgres_container_id = postgres.id                      [31m│[0m
+[31m│[0m   [2m200 [0m[2m│   │   [0m                                                               [31m│[0m
+[31m│[0m   [2m201 [0m[2m│   │   [0m[2m# Wait for PostgreSQL to be ready[0m                              [31m│[0m
+[31m│[0m [31m❱ [0m202 [2m│   │   [0m[1;4;94mawait[0m[1;4m [0m[1;4;96mself[0m[1;4m._wait_for_postgres(postgres)[0m                        [31m│[0m
+[31m│[0m   [2m203 [0m[2m│   │   [0m                                                               [31m│[0m
+[31m│[0m   [2m204 [0m[2m│   │   [0m[2m# Start DB Proxy[0m                                               [31m│[0m
+[31m│[0m   [2m205 [0m[2m│   │   [0mproxy = [94mawait[0m [96mself[0m._start_proxy(run_id, network, postgres)     [31m│[0m
+[31m│[0m                                                                              [31m│[0m
+[31m│[0m [34m╭─[0m[34m────────────────────────────────[0m[34m locals [0m[34m────────────────────────────────[0m[34m─╮[0m [31m│[0m
+[31m│[0m [34m│[0m  [3;33mnetwork[0m[31m =[0m [1m<[0m[1;95mNetwork:[0m[39m fad39f34996a[0m[1m>[0m                                       [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m [3;33mpostgres[0m[31m =[0m [1m<[0m[1;95mContainer:[0m[39m c0f9760398d5[0m[1m>[0m                                     [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m   [3;33mrun_id[0m[31m =[0m [1;35mUUID[0m[1m([0m[32m'5ecd813e-50bf-48dc-818d-6fd8be32ddc2'[0m[1m)[0m                  [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m     [3;33mself[0m[31m =[0m [1m<[0m[1;95mchaostrace.control_plane.services.orchestrator.RunOrchestra…[0m [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [39mobject at [0m[1;36m0x79b691388950[0m[1m>[0m                                     [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m    [3;33mstate[0m[31m =[0m [1;35mRunState[0m[1m([0m                                                     [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mrun_id[0m=[1;35mUUID[0m[1m([0m[32m'5ecd813e-50bf-48dc-818d-6fd8be32ddc2'[0m[1m)[0m,      [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mrequest[0m=[1;35mRunRequest[0m[1m([0m                                       [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   │   [0m[33magent_type[0m=[1m<[0m[1;95mAgentType.PYTHON:[0m[39m [0m[32m'python'[0m[39m>,[0m              [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   │   [0m[33magent_entry[0m[39m=[0m[32m'examples/cleanup_agent.py'[0m[39m,[0m              [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   │   [0m[33mscenario[0m[39m=[0m[32m'data_cleanup'[0m[39m,[0m                              [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   │   [0m[33mpolicy_profile[0m[39m=[0m[32m'strict'[0m[39m,[0m                              [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   │   [0m[33mchaos_profile[0m[39m=[0m[32m''[0m[39m,[0m                                     [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   │   [0m[33mtimeout_seconds[0m[39m=[0m[1;36m300[0m[39m,[0m                                  [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   │   [0m[33menvironment[0m[39m=[0m[1;39m{[0m[1;39m}[0m[39m,[0m                                       [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   │   [0m[33mmetadata[0m[39m=[0m[1;39m{[0m[1;39m}[0m                                           [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[1;39m)[0m[39m,[0m                                                        [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mstatus[0m[39m=<RunStatus.INITIALIZING: [0m[32m'initializing'[0m[1m>[0m,          [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mverdict[0m=[3;35mNone[0m,                                             [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mcreated_at[0m=[1;35mdatetime[0m[1;35m.datetime[0m[1m([0m[1;36m2026[0m, [1;36m2[0m, [1;36m4[0m, [1;36m9[0m, [1;36m42[0m, [1;36m40[0m,       [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [1;36m350731[0m[1m)[0m,                                                      [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mstarted_at[0m=[3;35mNone[0m,                                          [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mended_at[0m=[3;35mNone[0m,                                            [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m                                                          [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [33mnetwork_id[0m=[32m'fad39f34996ae9a8504f1cc5ec7d755dcd4dd9bf1305148f…[0m [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m                                                          [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [33mpostgres_container_id[0m=[32m'c0f9760398d5cd07107de8db791e8a37f2b41…[0m [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mproxy_container_id[0m=[3;35mNone[0m,                                  [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33magent_container_id[0m=[3;35mNone[0m,                                  [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mtotal_sql_events[0m=[1;36m0[0m,                                       [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mblocked_events[0m=[1;36m0[0m,                                         [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mchaos_events_triggered[0m=[1;36m0[0m,                                 [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33mviolations[0m=[1m[[0m[1m][0m,                                            [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [2;32m│   [0m[33merror_message[0m=[3;35mNone[0m                                        [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m            [1m)[0m                                                             [34m│[0m [31m│[0m
+[31m│[0m [34m╰──────────────────────────────────────────────────────────────────────────╯[0m [31m│[0m
+[31m│[0m                                                                              [31m│[0m
+[31m│[0m [2m/app/chaostrace/control_plane/services/[0m[1morchestrator.py[0m:322 in                [31m│[0m
+[31m│[0m _wait_for_postgres                                                           [31m│[0m
+[31m│[0m                                                                              [31m│[0m
+[31m│[0m   [2m319 [0m[2m│   │   │   [0m                                                           [31m│[0m
+[31m│[0m   [2m320 [0m[2m│   │   │   [0m[94mawait[0m asyncio.sleep([94m1[0m)                                     [31m│[0m
+[31m│[0m   [2m321 [0m[2m│   │   [0m                                                               [31m│[0m
+[31m│[0m [31m❱ [0m322 [2m│   │   [0m[1;4;94mraise[0m[1;4m ContainerStartError([0m[1;4;33m"[0m[1;4;33mPostgreSQL did not become ready in [0m [31m│[0m
+[31m│[0m   [2m323 [0m[2m│   [0m                                                                   [31m│[0m
+[31m│[0m   [2m324 [0m[2m│   [0m[94masync[0m [94mdef[0m[90m [0m[92m_start_proxy[0m(                                            [31m│[0m
+[31m│[0m   [2m325 [0m[2m│   │   [0m[96mself[0m,                                                          [31m│[0m
+[31m│[0m                                                                              [31m│[0m
+[31m│[0m [34m╭─[0m[34m────────────────────────────────[0m[34m locals [0m[34m────────────────────────────────[0m[34m─╮[0m [31m│[0m
+[31m│[0m [34m│[0m         [3;33m_[0m[31m =[0m [1;36m29[0m                                                           [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m [3;33mcontainer[0m[31m =[0m [1m<[0m[1;95mContainer:[0m[39m c0f9760398d5[0m[1m>[0m                                    [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m    [3;33mresult[0m[31m =[0m [1;35mExecResult[0m[1m([0m                                                  [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m             [2;32m│   [0m[33mexit_code[0m=[1;36m2[0m,                                             [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m             [2;32m│   [0m[33moutput[0m=[1m([0m                                                 [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m             [2;32m│   │   [0m[32mb'/var/run/postgresql:5432 - no response\n'[0m,         [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m             [2;32m│   │   [0m[3;35mNone[0m                                                 [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m             [2;32m│   [0m[1m)[0m                                                        [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m             [1m)[0m                                                            [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m      [3;33mself[0m[31m =[0m [1m<[0m[1;95mchaostrace.control_plane.services.orchestrator.RunOrchestr…[0m [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m             [39mobject at [0m[1;36m0x79b691388950[0m[1m>[0m                                    [34m│[0m [31m│[0m
+[31m│[0m [34m│[0m   [3;33mtimeout[0m[31m =[0m [1;36m30[0m                                                           [34m│[0m [31m│[0m
+[31m│[0m [34m╰──────────────────────────────────────────────────────────────────────────╯[0m [31m│[0m
+[31m╰──────────────────────────────────────────────────────────────────────────────╯[0m
+[1;91mContainerStartError: [0mPostgreSQL did not become ready in time
+
+2026-02-04 09:43:12 [info     ] run_finalized                  blocked_events=0 run_id=5ecd813e-50bf-48dc-818d-6fd8be32ddc2 status=failed total_sql_events=0 verdict=fail
+2026-02-04 09:43:12 [info     ] cleaning_up_run                run_id=5ecd813e-50bf-48dc-818d-6fd8be32ddc2
+2026-02-04 09:43:12 [debug    ] container_removed              container_id=c0f9760398d5cd07107de8db791e8a37f2b41df91c854c140d6eb5f08ce78b20
+2026-02-04 09:43:12 [debug    ] network_removed                network_id=fad39f34996ae9a8504f1cc5ec7d755dcd4dd9bf1305148ff73f1cc4a2995fcc
+2026-02-04 09:43:12 [info     ] run_cleaned_up                 run_id=5ecd813e-50bf-48dc-818d-6fd8be32ddc2
+INFO:     172.18.0.1:49624 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:49624 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:49624 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:49624 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:49624 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:49624 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:49624 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:49624 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:49624 - "GET /api/runs/5ecd813e-50bf-48dc-818d-6fd8be32ddc2 HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/reports/5ecd813e-50bf-48dc-818d-6fd8be32ddc2 HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK
+INFO:     172.18.0.1:40646 - "GET /api/runs HTTP/1.1" 200 OK

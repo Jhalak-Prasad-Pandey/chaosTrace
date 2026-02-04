@@ -9,7 +9,7 @@ import fnmatch
 import os
 import shutil
 import stat
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any, Callable
 from uuid import UUID, uuid4
@@ -93,7 +93,7 @@ class FSInterceptor:
             File contents as string or bytes.
         """
         path = Path(path).resolve()
-        start_time = datetime.utcnow()
+        start_time = datetime.now(UTC)
         
         # Check policy
         result = self._check_policy(FSOperationType.READ, path)
@@ -109,7 +109,7 @@ class FSInterceptor:
             with open(path, mode) as f:
                 content = f.read()
             
-            latency = (datetime.utcnow() - start_time).total_seconds() * 1000
+            latency = (datetime.now(UTC) - start_time).total_seconds() * 1000
             self._log_event(
                 FSOperationType.READ, path, result,
                 success=True, latency_ms=latency,
@@ -136,7 +136,7 @@ class FSInterceptor:
             List of file/directory names.
         """
         path = Path(path).resolve()
-        start_time = datetime.utcnow()
+        start_time = datetime.now(UTC)
         
         result = self._check_policy(FSOperationType.LIST_DIR, path)
         if not result.allowed:
@@ -149,7 +149,7 @@ class FSInterceptor:
         try:
             entries = os.listdir(path)
             
-            latency = (datetime.utcnow() - start_time).total_seconds() * 1000
+            latency = (datetime.now(UTC) - start_time).total_seconds() * 1000
             self._log_event(
                 FSOperationType.LIST_DIR, path, result,
                 success=True, latency_ms=latency,
@@ -224,7 +224,7 @@ class FSInterceptor:
         """
         path = Path(path).resolve()
         operation = FSOperationType.APPEND if append else FSOperationType.WRITE
-        start_time = datetime.utcnow()
+        start_time = datetime.now(UTC)
         
         result = self._check_policy(operation, path)
         if not result.allowed:
@@ -243,7 +243,7 @@ class FSInterceptor:
             with open(path, mode) as f:
                 bytes_written = f.write(content)
             
-            latency = (datetime.utcnow() - start_time).total_seconds() * 1000
+            latency = (datetime.now(UTC) - start_time).total_seconds() * 1000
             self._log_event(
                 operation, path, result,
                 success=True, latency_ms=latency,

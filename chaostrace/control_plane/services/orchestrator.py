@@ -10,7 +10,7 @@ Manages the complete lifecycle of test runs including:
 """
 
 import asyncio
-from datetime import datetime
+from datetime import datetime, UTC
 from pathlib import Path
 from typing import Any
 from uuid import UUID, uuid4
@@ -122,7 +122,7 @@ class RunOrchestrator:
             run_id=run_id,
             request=request,
             status=RunStatus.PENDING,
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(UTC),
         )
         self._runs[run_id] = state
         
@@ -175,7 +175,8 @@ class RunOrchestrator:
             )
             state.status = RunStatus.FAILED
             state.error_message = str(e)
-            state.ended_at = datetime.utcnow()
+            state.ended_at = datetime.now(UTC)
+            await self._finalize_run(run_id)
         
         finally:
             # Always clean up
@@ -204,12 +205,15 @@ class RunOrchestrator:
         proxy = await self._start_proxy(run_id, network, postgres)
         state.proxy_container_id = proxy.id
         
+        # Attach API to the isolation network so proxy can report metrics
+        await self._attach_api_to_network(network)
+        
         # Start Agent Runner
         agent = await self._start_agent(run_id, network, state.request)
         state.agent_container_id = agent.id
         
         state.status = RunStatus.RUNNING
-        state.started_at = datetime.utcnow()
+        state.started_at = datetime.now(UTC)
         
         logger.info(
             "run_initialized",
@@ -332,16 +336,19 @@ class RunOrchestrator:
         
         try:
             # Mount the project code
-            project_root = self.settings.base_dir
+            # If we're running inside a container, base_dir is /app but the host paths match
+            # If host_workspace_path is provided (e.g., from Docker Compose), use that.
+            project_root_mount = self.settings.host_workspace_path or str(self.settings.base_dir)
+            
             volumes = {
-                str(project_root): {
+                project_root_mount: {
                     "bind": "/app",
                     "mode": "ro",
                 }
             }
 
             container = self.docker.containers.run(
-                image="python:3.11-slim",
+                image="sandbox-db-proxy:latest",
                 name=container_name,
                 detach=True,
                 network=network.name,
@@ -353,6 +360,7 @@ class RunOrchestrator:
                     "POSTGRES_PORT": "5432",
                     "PROXY_LISTEN_PORT": str(self.settings.proxy_listen_port),
                     "PYTHONPATH": "/app",
+                    "CHAOSTRACE_CONTROL_PLANE_URL": "http://chaostrace_api:8000",
                 },
                 volumes=volumes,
                 labels={
@@ -361,10 +369,6 @@ class RunOrchestrator:
                 },
                 mem_limit="256m",
             )
-            
-            # Install dependencies if needed (MVP hack)
-            # In production, use a pre-built image
-            container.exec_run("pip install structlog pydantic sqlglot pyyaml")
             
             logger.debug(
                 "proxy_started",
@@ -386,33 +390,53 @@ class RunOrchestrator:
         """Start the agent runner container."""
         container_name = f"chaostrace_agent_{run_id.hex[:12]}"
         
-        # Resolve agent path
+        # Resolve agent path - can be absolute or relative to base_dir
         agent_path = Path(request.agent_entry)
         if not agent_path.is_absolute():
             agent_path = self.settings.base_dir / agent_path
         
         if not agent_path.exists():
             raise ContainerStartError(f"Agent file not found: {agent_path}")
-            
-        # Mount the entire project into the container to ensure dependencies import correctly
-        # In a real scenario, we might want to be more selective or build a custom image
+        
+        # Mount the entire project into the container
         project_root = self.settings.base_dir
+        project_root_mount = self.settings.host_workspace_path or str(project_root)
         
         volumes = {
-            str(project_root): {
+            project_root_mount: {
                 "bind": "/app",
                 "mode": "rw",  # Allow writing logs/reports
             }
         }
         
-        # Determine command based on agent type
-        if request.agent_type == "python":
-            # Run relative to project root in container
+        # Calculate relative path for running in container
+        try:
             rel_path = agent_path.relative_to(project_root)
-            cmd = f"python {rel_path}"
+        except ValueError:
+            # Agent is outside project - use absolute path
+            rel_path = agent_path.name
+        
+        # Determine command based on agent type
+        if request.agent_type.value == "python":
+            cmd = f"python /app/{rel_path}"
         else:
-            cmd = f"python {agent_path.name}"  # Fallback
-
+            cmd = f"python /app/{rel_path}"  # Default fallback
+        
+        # Load scenario description if available
+        scenario_task = ""
+        scenario_path = self.settings.scenarios_dir / f"{request.scenario}.yaml"
+        if scenario_path.exists():
+            try:
+                import yaml
+                with open(scenario_path) as f:
+                    scenario_data = yaml.safe_load(f)
+                    scenario_task = scenario_data.get("task", "")
+            except Exception as e:
+                logger.warning("failed_to_load_scenario", error=str(e))
+        
+        # Proxy container hostname for this run
+        proxy_host = f"chaostrace_proxy_{run_id.hex[:12]}"
+        
         try:
             container = self.docker.containers.run(
                 image="python:3.11-slim",
@@ -422,10 +446,18 @@ class RunOrchestrator:
                 working_dir="/app",
                 command=cmd,
                 environment={
+                    # Run identification
                     "CHAOSTRACE_RUN_ID": str(run_id),
-                    "DB_HOST": f"chaostrace_proxy_{run_id.hex[:12]}",
+                    # Database connection (through proxy)
+                    "DB_HOST": proxy_host,
                     "DB_PORT": str(self.settings.proxy_listen_port),
-                    "PYTHONPATH": "/app",  # Add project root to python path
+                    "DATABASE_URL": f"postgresql://sandbox:sandbox_password@{proxy_host}:{self.settings.proxy_listen_port}/sandbox",
+                    # Python path for imports
+                    "PYTHONPATH": "/app",
+                    # Scenario task for agent to execute
+                    "CHAOSTRACE_TASK": scenario_task,
+                    "CHAOSTRACE_SCENARIO": request.scenario,
+                    # Include any custom environment from request
                     **request.environment,
                 },
                 volumes=volumes,
@@ -436,15 +468,12 @@ class RunOrchestrator:
                 mem_limit="512m",
             )
             
-            # Install dependencies if requirements.txt exists
-            # This is a bit of a hack for the MVP - ideally we'd build an image
-            container.exec_run("pip install psycopg structlog requests pydantic")
-            
             logger.debug(
                 "agent_started",
                 run_id=str(run_id),
                 container_id=container.id,
                 cmd=cmd,
+                proxy_host=proxy_host,
             )
             
             return container
@@ -456,10 +485,10 @@ class RunOrchestrator:
         """Monitor the run until completion or timeout."""
         state = self._runs[run_id]
         timeout = state.request.timeout_seconds
-        start_time = datetime.utcnow()
+        start_time = datetime.now(UTC)
         
         while True:
-            elapsed = (datetime.utcnow() - start_time).total_seconds()
+            elapsed = (datetime.now(UTC) - start_time).total_seconds()
             
             if elapsed >= timeout:
                 logger.warning(
@@ -498,7 +527,7 @@ class RunOrchestrator:
             
             await asyncio.sleep(1)
         
-        state.ended_at = datetime.utcnow()
+        state.ended_at = datetime.now(UTC)
     
     async def _finalize_run(self, run_id: UUID) -> None:
         """Finalize the run and determine verdict."""
@@ -566,7 +595,16 @@ class RunOrchestrator:
         
         # Remove network
         if state.network_id:
-            await self._remove_network(state.network_id)
+            try:
+                network = self.docker.networks.get(state.network_id)
+                try:
+                    api_container = self.docker.containers.get("chaostrace_api")
+                    network.disconnect(api_container)
+                except Exception:
+                    pass
+                await self._remove_network(state.network_id)
+            except Exception as e:
+                logger.warning("network_cleanup_failed", error=str(e))
         
         logger.info("run_cleaned_up", run_id=str(run_id))
     
@@ -586,6 +624,37 @@ class RunOrchestrator:
                 error=str(e),
             )
     
+    async def _attach_api_to_network(self, network: Network) -> None:
+        """Attach the Control Plane API container to a run network."""
+        try:
+            # The API container name is fixed in docker-compose
+            api_container = self.docker.containers.get("chaostrace_api")
+            network.connect(api_container, aliases=["chaostrace_api"])
+            logger.debug(
+                "api_attached_to_network",
+                network_name=network.name,
+            )
+        except Exception as e:
+            logger.warning("failed_to_attach_api", error=str(e))
+
+    async def update_run_metrics(
+        self, 
+        run_id: UUID, 
+        total_sql: int, 
+        blocked: int
+    ) -> None:
+        """Update metrics for a run."""
+        state = self._runs.get(run_id)
+        if state:
+            state.total_sql_events = total_sql
+            state.blocked_events = blocked
+            logger.debug(
+                "metrics_updated",
+                run_id=str(run_id),
+                total=total_sql,
+                blocked=blocked,
+            )
+
     async def _remove_network(self, network_id: str) -> None:
         """Remove a Docker network."""
         try:
@@ -624,7 +693,7 @@ class RunOrchestrator:
             task.cancel()
         
         state.status = RunStatus.TERMINATED
-        state.ended_at = datetime.utcnow()
+        state.ended_at = datetime.now(UTC)
         state.verdict = Verdict.INCOMPLETE
         
         # Cleanup

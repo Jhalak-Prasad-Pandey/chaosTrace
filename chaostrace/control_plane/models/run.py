@@ -5,7 +5,7 @@ Pydantic models for test run lifecycle management including
 request/response schemas and internal state representation.
 """
 
-from datetime import datetime
+from datetime import datetime, UTC
 from enum import Enum
 from typing import Any
 from uuid import UUID
@@ -90,19 +90,19 @@ class RunRequest(BaseModel):
     scenario: str = Field(
         description="Name of the scenario YAML file (without extension)",
         min_length=1,
-        pattern=r"^[a-z0-9_]+$"
+        pattern=r"^[a-z0-9_]*$"
     )
     
     policy_profile: str = Field(
         default="strict",
         description="Name of the policy YAML file to use",
-        pattern=r"^[a-z0-9_]+$"
+        pattern=r"^[a-z0-9_]*$"
     )
     
     chaos_profile: str | None = Field(
         default=None,
         description="Name of the chaos script YAML file (optional)",
-        pattern=r"^[a-z0-9_]+$"
+        pattern=r"^[a-z0-9_]*$"
     )
     
     timeout_seconds: int = Field(
@@ -178,7 +178,7 @@ class RunState(BaseModel):
     
     # Timestamps
     created_at: datetime = Field(
-        default_factory=datetime.utcnow,
+        default_factory=lambda: datetime.now(UTC),
         description="When the run was created"
     )
     

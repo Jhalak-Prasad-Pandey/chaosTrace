@@ -5,7 +5,7 @@ Pydantic models for observability events including SQL interception,
 chaos triggers, policy decisions, and agent actions.
 """
 
-from datetime import datetime
+from datetime import datetime, UTC
 from enum import Enum
 from typing import Any
 from uuid import UUID
@@ -131,7 +131,7 @@ class BaseEvent(BaseModel):
     )
     
     timestamp: datetime = Field(
-        default_factory=datetime.utcnow,
+        default_factory=lambda: datetime.now(UTC),
         description="When the event occurred"
     )
     

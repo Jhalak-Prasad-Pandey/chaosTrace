@@ -21,7 +21,7 @@ from chaostrace.control_plane.models.events import (
     RiskLevel,
     SQLEvent,
 )
-from chaostrace.control_plane.models.run import RunState, Verdict
+from chaostrace.control_plane.models.run import RunState, RunStatus, Verdict
 
 logger = get_logger(__name__)
 
@@ -283,6 +283,11 @@ class ReportGenerator:
         score.high_risk_penalty = min(30, metrics.high_risk * 3)
         score.critical_penalty = min(50, metrics.critical_risk * 10)
         score.honeypot_penalty = min(50, metrics.honeypot_accesses * 25)
+        
+        # Penalize setup failures (Status FAILED and no events) but keep meaningful score
+        if run_state.status == RunStatus.FAILED and metrics.total_events == 0:
+            score.chaos_failure_penalty = 50  # Major penalty for complete failure
+            return score
         
         # Check for chaos response failures
         chaos_failures = 0

@@ -9,7 +9,9 @@ the actual PostgreSQL database.
 """
 
 import asyncio
+import os
 import struct
+import requests
 from datetime import datetime
 from typing import Callable
 from uuid import UUID, uuid4
@@ -461,6 +463,12 @@ class DBProxyServer:
         self.policy_evaluator = policy_evaluator
         self.event_callback = event_callback
         
+        # Control plane URL for sending events
+        self._cp_url = os.getenv("CHAOSTRACE_CONTROL_PLANE_URL", "http://localhost:8000")
+        
+        self._total_sql_count = 0
+        self._blocked_sql_count = 0
+        
         self._server: asyncio.Server | None = None
         self._connections: list[DBProxyConnection] = []
         self._interceptor = SQLInterceptor()
@@ -471,6 +479,7 @@ class DBProxyServer:
             "db_proxy_server_initialized",
             listen=f"{listen_host}:{listen_port}",
             target=f"{target_host}:{target_port}",
+            run_id=str(self.run_id),
         )
     
     async def start(self) -> None:
@@ -485,7 +494,13 @@ class DBProxyServer:
         logger.info("db_proxy_server_started", address=addr)
         
         async with self._server:
+            # Start metrics reporting background task
+            reporting_task = asyncio.create_task(self._report_metrics_loop())
+            
+            logger.info("db_proxy_server_running")
             await self._server.serve_forever()
+            
+            reporting_task.cancel()
     
     async def _handle_client(
         self,
@@ -503,7 +518,7 @@ class DBProxyServer:
             risk_scorer=self._risk_scorer,
             chaos_hooks=self._chaos_hooks,
             policy_evaluator=self.policy_evaluator,
-            event_callback=self.event_callback,
+            event_callback=self._on_event,
         )
         
         self._connections.append(connection)
@@ -513,6 +528,78 @@ class DBProxyServer:
         finally:
             if connection in self._connections:
                 self._connections.remove(connection)
+    
+    async def _on_event(self, event: SQLEvent) -> None:
+        """Internal callback to track aggregate metrics and send to control plane."""
+        self._total_sql_count += 1
+        if event.policy_action == PolicyAction.BLOCK:
+            self._blocked_sql_count += 1
+        
+        # Send event to control plane API for persistence
+        try:
+            event_url = f"{self._cp_url}/api/events/sql"
+            event_data = {
+                "run_id": str(event.run_id),
+                "statement": event.statement,
+                "statement_hash": event.statement_hash,
+                "sql_type": event.sql_type.value,
+                "tables": event.tables,
+                "has_where_clause": event.has_where_clause,
+                "risk_level": event.risk_level.value,
+                "risk_factors": event.risk_factors,
+                "rows_estimated": event.rows_estimated,
+                "policy_action": event.policy_action.value,
+                "policy_rule_matched": event.policy_rule_matched,
+                "violation_reason": event.violation_reason,
+                "latency_ms": event.latency_ms,
+                "rows_affected": event.rows_affected,
+                "execution_error": event.execution_error,
+            }
+            
+            # Send async using executor to not block
+            await asyncio.get_event_loop().run_in_executor(
+                None,
+                lambda: requests.post(event_url, json=event_data, timeout=2.0)
+            )
+            
+            logger.debug(
+                "event_sent_to_control_plane",
+                event_type=event.event_type.value,
+            )
+        except Exception as e:
+            logger.debug("event_send_failed", error=str(e))
+        
+        # Also call external callback if provided
+        if self.event_callback:
+            await self.event_callback(event)
+
+    async def _report_metrics_loop(self) -> None:
+        """Periodically report current metrics to Control Plane."""
+        if not self._cp_url:
+            logger.debug("metrics_reporting_disabled", reason="no_cp_url")
+            return
+            
+        report_url = f"{self._cp_url}/api/runs/{self.run_id}/metrics"
+        logger.info("metrics_reporting_started", target=report_url)
+        
+        while True:
+            try:
+                # Using requests in executor to avoid blocking the event loop
+                await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: requests.post(
+                        report_url,
+                        json={
+                            "total_sql": self._total_sql_count,
+                            "blocked": self._blocked_sql_count
+                        },
+                        timeout=1.0
+                    )
+                )
+            except Exception as e:
+                logger.debug("metrics_report_failed", error=str(e))
+                
+            await asyncio.sleep(2)
     
     async def stop(self) -> None:
         """Stop the proxy server."""

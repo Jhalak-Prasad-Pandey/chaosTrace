@@ -149,6 +149,11 @@ class Settings(BaseSettings):
         default=Path(__file__).parent.parent.parent,
         description="Base directory of the project"
     )
+
+    host_workspace_path: str | None = Field(
+        default=None,
+        description="Path to the workspace on the host machine"
+    )
     
     @property
     def policies_dir(self) -> Path:

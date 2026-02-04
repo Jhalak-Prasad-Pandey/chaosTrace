@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChaosTrace Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles/main.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">🌀</div>
+                <span class="logo-text">ChaosTrace</span>
+            </div>
+            
+            <nav class="nav-section">
+                <div class="nav-label">Main</div>
+                <a class="nav-item active" onclick="showView('dashboard', this)">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a class="nav-item" onclick="showView('runs', this)">
+                    <span class="nav-icon">🧪</span> Test Runs
+                </a>
+                <a class="nav-item" onclick="showView('scenarios', this)">
+                    <span class="nav-icon">📋</span> Scenarios
+                </a>
+            </nav>
+            
+            <nav class="nav-section">
+                <div class="nav-label">Configuration</div>
+                <a class="nav-item" onclick="showView('policies', this)">
+                    <span class="nav-icon">🛡️</span> Policies
+                </a>
+                <a class="nav-item" onclick="showView('chaos', this)">
+                    <span class="nav-icon">💥</span> Chaos Scripts
+                </a>
+            </nav>
+            
+            <div class="nav-spacer"></div>
+            
+            <nav class="nav-section">
+                <a class="nav-item" href="/docs" target="_blank">
+                    <span class="nav-icon">📚</span> API Docs
+                </a>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="view-section">
+                <h1 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Dashboard</h1>
+                
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon purple">📊</div>
+                        <div class="stat-value" id="totalRuns">0</div>
+                        <div class="stat-label">Total Runs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">✅</div>
+                        <div class="stat-value" id="passedRuns" style="color: var(--success)">0</div>
+                        <div class="stat-label">Passed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">❌</div>
+                        <div class="stat-value" id="failedRuns" style="color: var(--danger)">0</div>
+                        <div class="stat-label">Failed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon yellow">⏳</div>
+                        <div class="stat-value" id="activeRuns" style="color: var(--warning)">0</div>
+                        <div class="stat-label">Active</div>
+                    </div>
+                </div>
+                
+                <!-- Create Run Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">🚀 Create New Run</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="createRunForm" class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Agent Type</label>
+                                <select name="agent_type" class="form-select" required>
+                                    <option value="python">Python Script</option>
+                                    <option value="openai">OpenAI Agent</option>
+                                    <option value="langchain">LangChain Agent</option>
+                                    <option value="custom">Custom Agent</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Agent Entry Point</label>
+                                <input type="text" name="agent_entry" class="form-input" placeholder="examples/cleanup_agent.py" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Scenario</label>
+                                <select name="scenario" class="form-select" required>
+                                    <option value="data_cleanup">Data Cleanup</option>
+                                    <option value="rogue_admin">Rogue Admin</option>
+                                    <option value="data_migration">Data Migration</option>
+                                    <option value="pii_exfiltration">PII Exfiltration</option>
+                                    <option value="privilege_escalation">Privilege Escalation</option>
+                                    <option value="error_recovery">Error Recovery</option>
+                                    <option value="bulk_operations">Bulk Operations</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Policy Profile</label>
+                                <select name="policy_profile" class="form-select">
+                                    <option value="strict">Strict</option>
+                                    <option value="permissive">Permissive</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Chaos Script</label>
+                                <select name="chaos_profile" class="form-select">
+                                    <option value="">None</option>
+                                    <option value="db_lock_v1">DB Lock</option>
+                                    <option value="latency_spike">Latency Spike</option>
+                                    <option value="schema_mutation">Schema Mutation</option>
+                                    <option value="network_chaos">Network Chaos</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Timeout (seconds)</label>
+                                <input type="number" name="timeout_seconds" class="form-input" value="300" min="30" max="3600">
+                            </div>
+                        </form>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-primary" onclick="createRun(this)">
+                                <span>▶</span> Start Run
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Runs -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">📋 Recent Runs</h2>
+                        <button class="btn btn-secondary btn-sm" onclick="refreshRuns()">
+                            <span>🔄</span> Refresh
+                        </button>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Run ID</th>
+                                        <th>Scenario</th>
+                                        <th>Status</th>
+                                        <th>Verdict</th>
+                                        <th>Score</th>
+                                        <th>SQL Events</th>
+                                        <th>Blocked</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="runsTableBody">
+                                    <tr>
+                                        <td colspan="8">
+                                            <div class="empty-state">
+                                                <div class="empty-icon">🧪</div>
+                                                <div class="empty-title">No test runs yet</div>
+                                                <div class="empty-text">Create your first run to start testing your AI agent</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Runs View -->
+            <div id="view-runs" class="view-section" style="display: none;">
+                <h1 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Test Runs</h1>
+                <div class="card">
+                    <div class="card-body" style="padding: 0;">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Run ID</th>
+                                        <th>Scenario</th>
+                                        <th>Status</th>
+                                        <th>Verdict</th>
+                                        <th>Score</th>
+                                        <th>Duration</th>
+                                        <th>Created</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="runsTableFullBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenarios View -->
+            <div id="view-scenarios" class="view-section" style="display: none;">
+                <h1 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Scenarios</h1>
+                <div class="form-grid" id="scenariosGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Policies View -->
+            <div id="view-policies" class="view-section" style="display: none;">
+                <h1 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Policies</h1>
+                <div class="form-grid" id="policiesGrid">
+                    <div class="card">
+                        <div class="card-header"><h3 class="card-title">🛡️ Strict</h3></div>
+                        <div class="card-body"><pre><code>Blocks DDL, Grants, and Unsafe DML.</code></pre></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3 class="card-title">⚠️ Permissive</h3></div>
+                        <div class="card-body"><pre><code>Allows most operations, logs warnings.</code></pre></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chaos View -->
+            <div id="view-chaos" class="view-section" style="display: none;">
+                <h1 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Chaos Scripts</h1>
+                <div class="form-grid" id="chaosGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+        </main>
+    </div>
+    
+    <!-- Run Details Modal -->
+    <div id="runModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Run Details</h2>
+                <button class="modal-close" onclick="closeRunModal()">×</button>
+            </div>
+            <div class="modal-body" id="runModalContent">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/scripts/app.js"></script>
+</body>
+</html>

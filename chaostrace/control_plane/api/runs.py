@@ -65,14 +65,30 @@ async def list_runs(
     
     Returns runs sorted by creation time (newest first).
     """
+    from chaostrace.control_plane.services.event_store import get_event_store
+    
     orchestrator = get_orchestrator()
     runs, total = await orchestrator.list_runs(page=page, page_size=page_size)
+    
+    # Get event store for fallback stats retrieval
+    event_store = get_event_store()
     
     summaries = []
     for run in runs:
         duration = None
         if run.started_at and run.ended_at:
             duration = (run.ended_at - run.started_at).total_seconds()
+        
+        # Fetch actual event counts from EventStore if RunState shows 0
+        total_events = run.total_sql_events
+        blocked_events = run.blocked_events
+        if run.total_sql_events == 0:
+            try:
+                stats = event_store.get_run_stats(run.run_id)
+                total_events = stats.get("total_events", 0)
+                blocked_events = stats.get("blocked_events", 0)
+            except Exception:
+                pass  # Keep 0 values if stats retrieval fails
         
         summaries.append(RunSummary(
             run_id=run.run_id,
@@ -82,8 +98,8 @@ async def list_runs(
             policy_profile=run.request.policy_profile,
             created_at=run.created_at,
             duration_seconds=duration,
-            total_sql_events=run.total_sql_events,
-            blocked_events=run.blocked_events,
+            total_sql_events=total_events,
+            blocked_events=blocked_events,
         ))
     
     return RunListResponse(
@@ -129,6 +145,18 @@ async def terminate_run(run_id: UUID) -> dict:
     return {"status": "terminated", "run_id": str(run_id)}
 
 
+@router.post("/{run_id}/metrics")
+async def update_metrics(run_id: UUID, total_sql: int, blocked: int):
+    """
+    Update metrics for a run.
+    
+    This is called by the DB Proxy to report intercepted events.
+    """
+    orchestrator = get_orchestrator()
+    await orchestrator.update_run_metrics(run_id, total_sql, blocked)
+    return {"status": "ok"}
+
+
 @router.get("/{run_id}/events")
 async def get_run_events(
     run_id: UUID,
@@ -140,8 +168,11 @@ async def get_run_events(
     
     Returns SQL events, chaos events, and lifecycle events.
     """
-    # TODO: Implement event store retrieval
-    return []
+    from chaostrace.control_plane.services.event_store import get_event_store
+    
+    event_store = get_event_store()
+    events = event_store.get_events(run_id, event_type=event_type, limit=limit)
+    return [e.model_dump(mode="json") for e in events]
 
 
 @router.get("/{run_id}/report")

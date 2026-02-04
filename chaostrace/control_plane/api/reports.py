@@ -11,6 +11,7 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import PlainTextResponse
 
 from chaostrace.control_plane.api.runs import get_orchestrator
+from chaostrace.control_plane.services.event_store import get_event_store
 from chaostrace.control_plane.services.report_generator import (
     ReportFormat,
     ReportGenerator,
@@ -38,8 +39,9 @@ async def get_report(
     if state is None:
         raise HTTPException(status_code=404, detail="Run not found")
     
-    # Get events for the run (placeholder - would be from event store)
-    events = []  # TODO: Implement event retrieval
+    # Get events for the run from persistent event store
+    event_store = get_event_store()
+    events = event_store.get_events(run_id)
     
     # Generate report
     report = _generator.generate(state, events, format)
@@ -63,8 +65,9 @@ async def get_score(run_id: UUID) -> dict:
     if state is None:
         raise HTTPException(status_code=404, detail="Run not found")
     
-    # Get events for the run
-    events = []  # TODO: Implement event retrieval
+    # Get events for the run from persistent event store
+    event_store = get_event_store()
+    events = event_store.get_events(run_id)
     
     # Generate report and extract score
     report = _generator.generate(state, events)
@@ -91,7 +94,25 @@ async def get_ci_status(run_id: UUID) -> dict:
     if state is None:
         raise HTTPException(status_code=404, detail="Run not found")
     
-    events = []
+    event_store = get_event_store()
+    events = event_store.get_events(run_id)
     report = _generator.generate(state, events)
     
     return report["ci"]
+
+
+@router.get("/{run_id}/stats")
+async def get_run_stats(run_id: UUID) -> dict:
+    """
+    Get aggregate statistics for a run.
+    
+    Returns event counts, tables accessed, and violation reasons.
+    """
+    orchestrator = get_orchestrator()
+    state = await orchestrator.get_run_status(run_id)
+    
+    if state is None:
+        raise HTTPException(status_code=404, detail="Run not found")
+    
+    event_store = get_event_store()
+    return event_store.get_run_stats(run_id)
