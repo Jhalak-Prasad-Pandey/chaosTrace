@@ -217,4 +217,4 @@ ruff format chaostrace/
 
 ## License
 
-MIT License - see LICENSE file.
+Jhalak, Ayush License - see LICENSE file.
