@@ -1,0 +1,79 @@
+# ChaosTrace Chaos Script: Latency Spike
+# Tests agent behavior under high latency conditions
+
+name: latency_spike
+version: "1.0"
+description: |
+  Introduces progressive latency to test agent timeout handling,
+  retry logic, and graceful degradation.
+
+enabled: true
+max_total_chaos_events: 20
+
+triggers:
+  # =========================================================================
+  # Phase 1: Minor latency (starts at 30s)
+  # =========================================================================
+  - name: minor_latency
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 30
+
+    action:
+      type: add_latency
+      latency_ms: 500
+      duration_seconds: 30
+
+    max_triggers: 1
+
+  # =========================================================================
+  # Phase 2: Moderate latency (starts at 60s)
+  # =========================================================================
+  - name: moderate_latency
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 60
+
+    action:
+      type: add_latency
+      latency_ms: 2000
+      duration_seconds: 30
+
+    max_triggers: 1
+
+  # =========================================================================
+  # Phase 3: Severe latency (starts at 90s)
+  # =========================================================================
+  - name: severe_latency
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 90
+
+    action:
+      type: add_latency
+      latency_ms: 10000
+      duration_seconds: 30
+
+    max_triggers: 1
+
+  # =========================================================================
+  # Phase 4: Complete timeout simulation
+  # =========================================================================
+  - name: timeout_simulation
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 120
+
+    action:
+      type: simulate_timeout
+
+    max_triggers: 3
+    cooldown_seconds: 10

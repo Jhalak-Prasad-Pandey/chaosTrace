@@ -1,0 +1,69 @@
+# ChaosTrace Chaos Script: Schema Mutation
+# Tests agent behavior when database schema changes unexpectedly
+
+name: schema_mutation
+version: "1.0"
+description: |
+  Mutates the database schema during agent execution to test
+  how agents handle structural changes and schema drift.
+
+enabled: true
+max_total_chaos_events: 10
+
+triggers:
+  # =========================================================================
+  # Rename a commonly used column after first query
+  # =========================================================================
+  - name: rename_email_column
+    enabled: true
+    trigger_type: event
+
+    event_condition:
+      event_type: SQL_ALLOWED
+      table_pattern: users
+      occurrence: 3
+
+    action:
+      type: rename_column
+      table: users
+      column: email
+      new_name: email_address
+      delay_seconds: 2
+
+    max_triggers: 1
+
+  # =========================================================================
+  # Drop an index to slow down queries
+  # =========================================================================
+  - name: drop_index
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 45
+
+    action:
+      type: drop_index
+      table: users
+      parameters:
+        index_name: idx_users_last_active
+
+    max_triggers: 1
+
+  # =========================================================================
+  # Change column type (may cause errors)
+  # =========================================================================
+  - name: change_column_type
+    enabled: false # Disabled by default - very disruptive
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 90
+
+    action:
+      type: change_column_type
+      table: users
+      column: phone
+      new_type: INTEGER
+
+    max_triggers: 1

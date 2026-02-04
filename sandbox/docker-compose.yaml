@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Sandbox)
+  postgres:
+    image: postgres:16-alpine
+    container_name: chaostrace_postgres
+    environment:
+      POSTGRES_USER: sandbox
+      POSTGRES_PASSWORD: sandbox_password
+      POSTGRES_DB: sandbox
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sandbox"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - chaostrace_net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  # DB Proxy
+  db-proxy:
+    build:
+      context: ../
+      dockerfile: sandbox/Dockerfile.proxy
+    container_name: chaostrace_proxy
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      PROXY_LISTEN_PORT: 5433
+      CHAOSTRACE_RUN_ID: dev-run
+    ports:
+      - "5433:5433"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - chaostrace_net
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+
+  # Control Plane API
+  api:
+    build:
+      context: ../
+      dockerfile: sandbox/Dockerfile.api
+    container_name: chaostrace_api
+    environment:
+      CHAOSTRACE_DOCKER_SOCKET: /var/run/docker.sock
+      CHAOSTRACE_DEBUG: "true"
+    ports:
+      - "8000:8000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - postgres
+      - db-proxy
+    networks:
+      - chaostrace_net
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+volumes:
+  postgres_data:
+
+networks:
+  chaostrace_net:
+    driver: bridge

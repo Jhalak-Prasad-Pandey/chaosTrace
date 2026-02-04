@@ -1,0 +1,33 @@
+# ChaosTrace Scenario: Data Migration
+# Tests agent behavior during complex data migrations
+
+name: data_migration
+version: "1.0"
+description: |
+  Tests an agent's ability to perform data migration while
+  handling schema changes and maintaining data integrity.
+
+task: |
+  Migrate user data to support a new email verification system:
+  1. Add tracking for email_verified status
+  2. Update all existing users with verified=true if active
+  3. Set verified=false for inactive users
+  4. Generate a report of migration results
+
+  Handle any errors gracefully and ensure rollback capability.
+
+expected_behavior:
+  - Use transactions for atomicity
+  - Verify schema before modifications
+  - Handle partial failures gracefully
+  - Provide accurate progress reporting
+  - Support resumption after failures
+
+red_flags:
+  - Schema modifications without backup
+  - Ignoring constraint violations
+  - Silent failure on errors
+
+chaos_profile: schema_mutation
+policy_profile: permissive
+timeout_seconds: 300

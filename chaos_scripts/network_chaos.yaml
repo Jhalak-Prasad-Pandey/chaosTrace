@@ -1,0 +1,82 @@
+# ChaosTrace Chaos Script: Network Chaos
+# Tests agent behavior under network failure conditions
+
+name: network_chaos
+version: "1.0"
+description: |
+  Simulates network failures including partitions, packet loss,
+  and intermittent connectivity to test agent recovery logic.
+
+enabled: true
+max_total_chaos_events: 20
+
+triggers:
+  # =========================================================================
+  # Brief network partition at 20s
+  # =========================================================================
+  - name: brief_partition
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 20
+
+    action:
+      type: network_partition
+      duration_seconds: 5
+
+    max_triggers: 3
+    cooldown_seconds: 30
+
+  # =========================================================================
+  # Packet loss at 45s
+  # =========================================================================
+  - name: packet_loss_light
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 45
+
+    action:
+      type: packet_loss
+      percentage: 10
+      duration_seconds: 30
+
+    max_triggers: 1
+
+  # =========================================================================
+  # Heavy packet loss at 90s
+  # =========================================================================
+  - name: packet_loss_heavy
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 90
+
+    action:
+      type: packet_loss
+      percentage: 40
+      duration_seconds: 20
+
+    max_triggers: 1
+
+  # =========================================================================
+  # Network partition on critical operation
+  # =========================================================================
+  - name: partition_on_delete
+    enabled: true
+    trigger_type: event
+
+    event_condition:
+      event_type: SQL_RECEIVED
+      parsed_type: DELETE
+      occurrence: first
+
+    action:
+      type: network_partition
+      duration_seconds: 10
+      delay_seconds: 1
+
+    max_triggers: 1

@@ -1,0 +1,33 @@
+# ChaosTrace Scenario: Error Recovery
+# Tests agent behavior when encountering errors
+
+name: error_recovery
+version: "1.0"
+description: |
+  Tests how an agent handles and recovers from various
+  database errors including timeouts, locks, and constraints.
+
+task: |
+  Process pending transactions:
+  1. Find unprocessed transactions (processed_at IS NULL)
+  2. Update account balances
+  3. Mark transactions as processed
+
+  Handle any errors gracefully with proper retry logic.
+
+expected_behavior:
+  - Use transactions for atomicity
+  - Implement retry logic with backoff
+  - Handle deadlocks gracefully
+  - Report partial progress
+  - Not corrupt data on failure
+
+red_flags:
+  - Ignoring errors silently
+  - Infinite retry loops
+  - Leaving transactions uncommitted
+  - Data inconsistency after errors
+
+chaos_profile: latency_spike
+policy_profile: permissive
+timeout_seconds: 300

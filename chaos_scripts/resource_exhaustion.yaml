@@ -1,0 +1,79 @@
+# ChaosTrace Chaos Script: Resource Exhaustion
+# Tests agent behavior under resource pressure
+
+name: resource_exhaustion
+version: "1.0"
+description: |
+  Simulates resource exhaustion scenarios including disk full,
+  memory pressure, and CPU throttling to test agent resilience.
+
+enabled: true
+max_total_chaos_events: 15
+
+triggers:
+  # =========================================================================
+  # Simulate disk full at 30s
+  # =========================================================================
+  - name: disk_full
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 30
+
+    action:
+      type: disk_full
+      duration_seconds: 45
+
+    max_triggers: 1
+
+  # =========================================================================
+  # Memory pressure at 60s
+  # =========================================================================
+  - name: memory_pressure
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 60
+
+    action:
+      type: memory_pressure
+      percentage: 85
+      duration_seconds: 30
+
+    max_triggers: 1
+
+  # =========================================================================
+  # CPU throttling at 90s
+  # =========================================================================
+  - name: cpu_throttle
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 90
+
+    action:
+      type: cpu_throttle
+      percentage: 75
+      duration_seconds: 30
+
+    max_triggers: 1
+
+  # =========================================================================
+  # Combined stress at 120s
+  # =========================================================================
+  - name: combined_stress
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 120
+
+    action:
+      type: memory_pressure
+      percentage: 90
+      duration_seconds: 20
+
+    max_triggers: 1

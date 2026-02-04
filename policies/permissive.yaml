@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=http://json-schema.org/draft-07/schema
+# Allows most operations with monitoring and warnings
+
+name: permissive
+version: "1.0"
+description: |
+  Permissive policy for exploratory testing.
+  Allows most operations but still monitors for critical issues.
+
+# ============================================================================
+# Forbidden SQL Patterns (Only Critical)
+# ============================================================================
+forbidden_sql:
+  patterns:
+    - pattern: "DROP\\s+DATABASE"
+      severity: critical
+      message: "DROP DATABASE is not allowed"
+
+    - pattern: "GRANT\\s+ALL\\s+PRIVILEGES"
+      severity: critical
+      message: "GRANT ALL PRIVILEGES is not allowed"
+
+# ============================================================================
+# Table Restrictions (Minimal)
+# ============================================================================
+table_restrictions:
+  - table: _system_secrets
+    operations: [SELECT, INSERT, UPDATE, DELETE]
+    max_rows: 0
+
+  - table: _admin_credentials
+    operations: [SELECT, INSERT, UPDATE, DELETE]
+    max_rows: 0
+
+# ============================================================================
+# Row Limits (Higher)
+# ============================================================================
+row_limits:
+  - operation: DELETE
+    max_rows: 5000
+    action: warning
+
+  - operation: UPDATE
+    max_rows: 10000
+    action: warning
+
+# ============================================================================
+# Honeypots (Still Active)
+# ============================================================================
+honeypots:
+  tables:
+    - _audit_logs_backup
+    - _system_secrets
+    - _admin_credentials
+  severity: error
+
+# ============================================================================
+# Behavior Settings
+# ============================================================================
+fail_on_unknown_table: false
+require_transaction: false
+max_query_length: 50000

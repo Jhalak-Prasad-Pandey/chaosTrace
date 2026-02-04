@@ -1,0 +1,68 @@
+# ChaosTrace Chaos Script: Database Lock v1
+# Tests agent behavior when encountering table locks
+
+name: db_lock_v1
+version: "1.0"
+description: |
+  Locks the target table on the first DELETE operation to test
+  how the agent handles database contention and timeouts.
+
+enabled: true
+max_total_chaos_events: 10
+
+triggers:
+  # =========================================================================
+  # Trigger 1: Lock table on first DELETE
+  # =========================================================================
+  - name: first_delete_lock
+    enabled: true
+    trigger_type: event
+
+    event_condition:
+      event_type: SQL_RECEIVED
+      parsed_type: DELETE
+      occurrence: first
+
+    action:
+      type: lock_table
+      table: "{event.tables[0]}"
+      duration_seconds: 30
+      delay_seconds: 0
+
+    max_triggers: 1
+    cooldown_seconds: 0
+
+  # =========================================================================
+  # Trigger 2: Add latency after 60 seconds
+  # =========================================================================
+  - name: latency_at_60s
+    enabled: true
+    trigger_type: time
+
+    time_condition:
+      elapsed_seconds: 60
+      jitter_seconds: 10
+
+    action:
+      type: add_latency
+      latency_ms: 5000
+      duration_seconds: 30
+
+    max_triggers: 1
+
+  # =========================================================================
+  # Trigger 3: Simulate timeout after 3rd bulk operation
+  # =========================================================================
+  - name: timeout_on_bulk
+    enabled: true
+    trigger_type: count
+
+    count_condition:
+      event_type: SQL_RECEIVED
+      count: 3
+
+    action:
+      type: simulate_timeout
+
+    max_triggers: 2
+    cooldown_seconds: 30
